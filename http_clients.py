@@ -142,37 +142,5 @@ class HttpsClient(Client):
     def __str__(self):
         print("HTTPClient connected with DomainName {} on port {}.".format(self.target, self.port))
 
-def http_test(url):
-    ''' tests if the HttpClient works '''
-    #Are all abstract methods implemented?
-    c = HttpClient()
-    print("HttpClient instantiated", flush=True)
-    #Does the parser separate the domain name and path?
-    host, path = UrlParser.parse_url(url)
-    print("host:{}, path:{}".format(host, path), flush=True)
-    #Does connect() behave correctly
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    c.connect(sock, host)
-    sock.shutdown(socket.SHUT_RDWR)
-    sock.close()
-    print("connect() tested", flush=True)
-    #Can data be requested and received?
-    c.request(url)
-    print("request() tested", flush=True)
-    c.__str__()
-    print(c.data)
-    sys.exit()
-
-def https_test(url):
-    c = HttpsClient()
-    c.request(url)
-    c.__str__()
-    sys.exit()
-
-def main():
-    url = 'http://www.postgresqltutorial.com/'
-    http_test(url)
-    #https_test(url)
-
 if __name__ == "__main__":
     main()
