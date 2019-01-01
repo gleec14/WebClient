@@ -6,13 +6,14 @@ class UrlParser:
     """
     @classmethod
     def parse_url(cls, url):
-        ''' Separate protocol HTTP(S) from url '''
+        """ Given a url, parse_url will return the domain name and uri path. """
+        #Separate protocol HTTP(S) from url
         s = url.split('//')
         if len(s) > 1:
             s = s[1]
         else:
             s = s[0]
-        ''' Separate domain name from path '''
+        #Separate domain name from path
         ret = s.find('/')
         host = s
         path = '/'

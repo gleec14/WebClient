@@ -20,8 +20,8 @@ def test_connection(domains):
         sock.shutdown(socket.SHUT_RDWR)
         sock.close()
 
-def test_request_http(domains):
-    """ tests the request function of http and https Client
+def test_request_http(domain, filename):
+    """ tests the request function of http and https Client.
 
     Params:
     domains -- a list of domain names
@@ -29,10 +29,11 @@ def test_request_http(domains):
     print('Testing the HttpClient request()')
     c = HttpClient()
     c.request(domain)
-    print(c.data)
+    with open('{}'.format(filename), 'w') as fo:
+        fo.write(c.data)
 
-def test_request_https(domain):
-    """ tests the request function of https Client
+def test_request_https(domain, filename):
+    """ tests the request function of https Client.
 
     Params:
     domains -- a list of domain names
@@ -40,14 +41,32 @@ def test_request_https(domain):
     print('Testing the HttpsClient request()')
     c = HttpsClient()
     c.request(domain)
+    print("Opening file",flush=True)
+    with open('{}'.format(filename), 'w+') as fo:
+        print("Writing to file",flush=True)
+        fo.write(c.data)
 
 def main():
-    filename = sys.argv[1]
-    with open(filename, 'r') as fo:
+    #Check if file with urls is included
+    if len(sys.argv) < 2:
+        print("usage: tests.py <file with urls>")
+        sys.exit()
+    urls = sys.argv[1]
+    #Read urls line by line and run tests. The results of each test will be written to its own file
+    with open(urls, 'r') as fo:
+        count = 0
         for line in fo:
-            #test_connection(domains)
-            #test_request_http(domains)
-            test_request_https(line[:-1]) #Get rid of newline at end
+            filename, path = UrlParser.parse_url(line)
+            filename = filename.split('.')[0]
+
+            filename = filename + str(count) + '.txt'
+            test_request_http(line[:-1], filename)
+            count += 1
+            filename = filename[:-5] + str(count) + '.txt' #works up to single digit count
+            test_request_https(line[:-1], filename) #Get rid of newline at end
+            #filename = filename + str(count) + '.txt'
+            #test_request_https(line[:-1], filename) #Get rid of newline at end
+            count += 1
     sys.exit()
 
 if __name__ == '__main__':
