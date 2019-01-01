@@ -52,6 +52,7 @@ class HttpClient(Client):
     def request(self, url, params={}):
         #Create socket
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.settimeout(2)
 
         #Clear data from previous request
         self.data = ''
@@ -75,7 +76,10 @@ class HttpClient(Client):
                 buffer += data.decode('utf-8')
             except UnicodeDecodeError:
                 print("Could not decode a block of data using utf-8")
-            data = self.sock.recv(1024)
+            try:
+                data = self.sock.recv(1024)
+            except:
+                data = None
         self.data = buffer
 
         #Close the connection now that you have everything
@@ -107,6 +111,9 @@ class HttpsClient(Client):
         #Create default ssl context to allow HTTPS connections
         context = ssl.create_default_context()
 
+        #Clear data from previous request
+        self.data = ''
+
         #Parse url and connect to host
         host, path = UrlParser.parse_url(url)
 
@@ -120,6 +127,7 @@ class HttpsClient(Client):
         else:
             with ssock:
                 self.sock = ssock
+                self.sock.settimeout(2)
                 #Send HTTP request
                 req = 'GET {} HTTP/1.1\r\nHost: {}\r\n\r\n'.format(path, host)
                 print('HTTP request\n{}'.format(req))
@@ -135,8 +143,12 @@ class HttpsClient(Client):
                         buffer += data.decode('utf-8')
                     except UnicodeError:
                         print("Could not decode a block of data using utf-8")
-                    data = self.sock.recv(1024)
+                    try:
+                        data = self.sock.recv(1024)
+                    except:
+                        data = None
                 self.data = buffer
+                self.sock.shutdown(socket.SHUT_RDWR)
                 print("\n\ndone")
 
     def __str__(self):
