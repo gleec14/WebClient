@@ -3,6 +3,7 @@ import socket
 from http_clients import HttpClient, HttpsClient
 from urlparser import UrlParser
 
+'''
 def test_connection(domains):
     """ Tests the connection function of http client.
 
@@ -19,12 +20,13 @@ def test_connection(domains):
         print('Connected with {}'.format(host))
         sock.shutdown(socket.SHUT_RDWR)
         sock.close()
-
+'''
 def test_request_http(domain, filename):
-    """ tests the request function of http and https Client.
+    """ tests the request function of http Client.
 
     Params:
-    domains -- a list of domain names
+    domains -- domain name to send request to
+    filename -- filename to write response to
     """
     print('Testing the HttpClient request()')
     c = HttpClient()
@@ -36,7 +38,8 @@ def test_request_https(domain, filename):
     """ tests the request function of https Client.
 
     Params:
-    domains -- a list of domain names
+    domain -- domain name to send request to
+    filename -- filename to write response to
     """
     print('Testing the HttpsClient request()')
     c = HttpsClient()
