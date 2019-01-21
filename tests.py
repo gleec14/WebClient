@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import sys
 import socket
 from http_clients import HttpClient, HttpsClient
